@@ -15,6 +15,7 @@ pub fn phase_shift<R: Runtime>(
     alpha: f32,
 ) -> (TensorHandle<R>, TensorHandle<R>) {
     let client = <R as Runtime>::client(&Default::default());
+    client.properties().hardware.plane_size_max;
     let shape = input_re.shape.clone();
     let num_elements = shape.iter().product::<usize>();
     let dtype = input_re.dtype;
@@ -53,7 +54,7 @@ pub fn phase_shift_launch<R: Runtime>(
     dtype: StorageType,
 ) -> Result<(), LaunchError> {
     // TODO
-    let cube_count = CubeCount::new_1d(8);
+    let cube_count = CubeCount::new_1d(16);
     let cube_dim = CubeDim::new_2d(32,2);
     let vectorization = 1;
 
@@ -106,7 +107,7 @@ pub(crate) fn phase_shift_kernel_one_window<F: Float>(
     alpha: InputScalar,
 ) {
     let num_freq_bins = input_re.shape(input_re.rank() - 1);
-
+    
     // The following code allow to ignore the batch index and assume only one window
     let input_re_layout = BatchSignalLayout::new(input_re, window_index);
     let input_im_layout = BatchSignalLayout::new(input_im, window_index);

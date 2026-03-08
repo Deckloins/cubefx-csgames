@@ -59,8 +59,8 @@ pub fn rfft_launch<R: Runtime>(
     spectrum_im: TensorHandleRef<R>,
     dtype: StorageType,
 ) -> Result<(), LaunchError> {
-    let cube_count = CubeCount::new_single();
-    let cube_dim = CubeDim::new_single();
+    let cube_count = CubeCount::new_1d(16);
+    let cube_dim = CubeDim::new_2d(32,2);
     let vectorization = 1;
 
     rfft_kernel::launch::<R>(
